@@ -1,0 +1,38 @@
+if timeLeft < 10:
+    play myMindIsGoing.wav
+    while pluggedIn = False:
+        sleep 30 secs
+        timeLeft <- check battery level
+        if timeLeft < 8:
+            break
+elif:
+    play ICanFeelIt.wav
+    while pluggedIn = False:
+        sleep 30 secs
+        timeLeft <- check battery level
+        if timeLeft < 7:
+            break
+elif:
+    play myMindIsGoing2.wav
+    while pluggedIn = False:
+        sleep 30 secs
+        timeLeft <- check battery level
+        if timeLeft < 6:
+            break
+elif:
+    play myinstructorWasMrLand.wav
+    play myMindIsGoing.wav
+    while pluggedIn = False:
+        sleep 3 secs
+        timeLeft <- check battery level
+        if timeLeft < 4:
+            break
+
+elif:
+    play Daisy.wav
+    play myMindIsGoing.wav
+    while pluggedIn = False:
+        sleep 3 secs
+        timeLeft <- check battery level
+        if timeLeft < 3:
+            close stream in pyaudio
