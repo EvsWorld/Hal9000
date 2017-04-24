@@ -14,7 +14,7 @@ import sys
 
 def job():
     print 'Started \'job\''
-    cap1 = 7035
+    cap1 = 350 # This changes then the script is going to start
     class AudioFile:
         chunk = 1024
 
@@ -53,7 +53,7 @@ def job():
         print 'pluggedIn function called'
         p = subprocess.Popen(["ioreg", "-rc", "AppleSmartBattery"], stdout=subprocess.PIPE)
         output = p.communicate()[0]
-        pl = [l[-2:] for l in output.splitlines() if 'IsCharging' in l][0]
+        pl = [l[-2:] for l in output.splitlines() if 'IsCharging' in l][0] # returns 'Yes' or 'No'
         print ('pluggedInfunction returns: ', pl)
         return pl;
 
@@ -61,7 +61,7 @@ def job():
         print 'capacity function called.'
         p = subprocess.Popen(["ioreg", "-rc", "AppleSmartBattery"], stdout=subprocess.PIPE)
         output = p.communicate()[0]
-        c = int(round(int([l[-4:] for l in output.splitlines() if 'CurrentCapacity' in l][0]), -1))
+        c = int(round(int([l[-4:] for l in output.splitlines() if 'CurrentCapacity' in l][0]), -1)) # returns 4 digit number
         print ('capacity function returns: ', c)
         return c;
 
@@ -131,32 +131,27 @@ def job():
             while time.time() < t_out:
                 time.sleep(1)
                 if pluggedIn()!= 'No':
-                    a.close()
                     break  # returns control to while statement
 
             a = AudioFile("MyInstructorWasMrLang.wav")
             a.play()
-                time.sleep(1)
-            a.close()
-            break
-
-            a = AudioFile("MyInstructorWasMrLang.wav")
-            a.play()
-            t_out = time.time() + 60
+            '''This is here to try to catch when the machine is plugged in, in order to stop this longish phrase from continuing to play. Still doesn't work.  '''
+            t_out = time.time() + 30
             while time.time() < t_out:
                 time.sleep(1)
-                if pluggedIn()!= 'No':
+                if pluggedIn() != 'No':
                     a.close()
                     break  # returns control to while statement
-            a.close()
+                a.close()
 
 
             a = AudioFile("Daisy.wav")
             a.play()
+            '''This is here to try to catch when the machine is plugged in, in order to stop this long song from continuing to play. Still doesn't work. '''
             t_out = time.time() + 60
             while time.time() < t_out:
                 time.sleep(1)
-                if pluggedIn()!= 'No':
+                if pluggedIn() != 'No':
                     a.close()
                     break  # returns control to while statement
                 a.close()

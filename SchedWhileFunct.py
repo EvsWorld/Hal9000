@@ -10,9 +10,9 @@ import pyaudio
 import wave
 import sys
 
-# Global variables
+# These should really be called battery levels, not times
 increment = 25
-time1 = 350
+time1 = 350 # This changes when this script is going to start making noise
 time2 = time1 - increment
 time3 = time2 - increment
 time4 = time3 - increment
