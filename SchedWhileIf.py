@@ -14,7 +14,7 @@ import sys
 
 def job():
     print 'Started \'job\''
-    cap1 = 6420
+    cap1 = 7035
     class AudioFile:
         chunk = 1024
 
