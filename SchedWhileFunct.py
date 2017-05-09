@@ -10,77 +10,76 @@ import pyaudio
 import wave
 import sys
 
-# These should really be called battery levels, not times
-increment = 25
-time1 = 350 # This changes when this script is going to start making noise
-time2 = time1 - increment
-time3 = time2 - increment
-time4 = time3 - increment
-time5 = time4 - increment
-time6 = time5 - increment
-time7 = time6 - increment
-time8 = time7 - increment
-time9 = time8 - increment
-time10 = time9 - increment
-time11 = time10 - increment
-
-class AudioFile:
-    chunk = 1024
-
-    def __init__(self, file):
-        """ Init audio stream """
-        self.wf = wave.open(file, 'rb')
-        self.p = pyaudio.PyAudio()
-        self.stream = self.p.open(
-            format = self.p.get_format_from_width(self.wf.getsampwidth()),
-            channels = self.wf.getnchannels(),
-            rate = self.wf.getframerate(),
-            output = True
-        )
-
-    def play(self):
-        """ Turn system volume to max """
-        #from subprocess import call
-        subprocess.call(['osascript', '-e', 'set volume 10'])
-
-        """ Play entire file """
-        data = self.wf.readframes(self.chunk)
-        while data != '':
-            self.stream.write(data)
-            data = self.wf.readframes(self.chunk)
-        """ Turn system volume to 5 """
-        #from subprocess import call
-        subprocess.call(['osascript', '-e', 'set volume 3'])
-
-
-    def close(self):
-        """ Graceful shutdown """
-        self.stream.close()
-        self.p.terminate()
-
-def pluggedIn():
-    print 'pluggedIn function called'
-    p = subprocess.Popen(["ioreg", "-rc", "AppleSmartBattery"], stdout=subprocess.PIPE)
-    output = p.communicate()[0]
-    pl = [l[-2:] for l in output.splitlines() if 'IsCharging' in l][0]
-    print ('pluggedInfunction returns: ', pl)
-    return pl;
-
-def capacity():
-    print 'capacity function called.'
-    p = subprocess.Popen(["ioreg", "-rc", "AppleSmartBattery"], stdout=subprocess.PIPE)
-    output = p.communicate()[0]
-    c = int(round(int([l[-4:] for l in output.splitlines() if 'CurrentCapacity' in l][0]), 0))
-    print ('capacity function returns: ', c)
-    return c;
-
-played1=played2=played3=played4=played5=played6=played7=played8=played9=played10=played11 = False
-feelBetPlayed = False
-
 def job():
 
-    while True:
+    # These should really be called battery levels, not times
+    increment = 25
+    time1 = 7590 # This changes when this script is going to start making noise
+    time2 = time1 - increment
+    time3 = time2 - increment
+    time4 = time3 - increment
+    time5 = time4 - increment
+    time6 = time5 - increment
+    time7 = time6 - increment
+    time8 = time7 - increment
+    time9 = time8 - increment
+    time10 = time9 - increment
+    time11 = time10 - increment
 
+    class AudioFile:
+        chunk = 1024
+
+        def __init__(self, file):
+            """ Init audio stream """
+            self.wf = wave.open(file, 'rb')
+            self.p = pyaudio.PyAudio()
+            self.stream = self.p.open(
+                format = self.p.get_format_from_width(self.wf.getsampwidth()),
+                channels = self.wf.getnchannels(),
+                rate = self.wf.getframerate(),
+                output = True
+            )
+
+        def play(self):
+            """ Turn system volume to max """
+            #from subprocess import call
+            subprocess.call(['osascript', '-e', 'set volume 10'])
+
+            """ Play entire file """
+            data = self.wf.readframes(self.chunk)
+            while data != '':
+                self.stream.write(data)
+                data = self.wf.readframes(self.chunk)
+            """ Turn system volume to 5 """
+            #from subprocess import call
+            subprocess.call(['osascript', '-e', 'set volume 3'])
+
+
+        def close(self):
+            """ Graceful shutdown """
+            self.stream.close()
+            self.p.terminate()
+
+    def pluggedIn():
+        print 'pluggedIn function called'
+        p = subprocess.Popen(["ioreg", "-rc", "AppleSmartBattery"], stdout=subprocess.PIPE)
+        output = p.communicate()[0]
+        pl = [l[-2:] for l in output.splitlines() if 'IsCharging' in l][0]
+        print ('pluggedInfunction returns: ', pl)
+        return pl;
+
+    def capacity():
+        print 'capacity function called.'
+        p = subprocess.Popen(["ioreg", "-rc", "AppleSmartBattery"], stdout=subprocess.PIPE)
+        output = p.communicate()[0]
+        c = int(round(int([l[-4:] for l in output.splitlines() if 'CurrentCapacity' in l][0]), 0))
+        print ('capacity function returns: ', c)
+        return c;
+
+    played1=played2=played3=played4=played5=played6=played7=played8=played9=played10=played11 = False
+    feelBetPlayed = False
+
+    while True:
         while (not played1):
             time.sleep(1)
 
@@ -227,6 +226,7 @@ def job():
                     time.sleep(1)
                 a.close()
 
+
             else:
                 break
 
@@ -243,4 +243,19 @@ def job():
             continue  # executed if the loop ended normally (no break)
         break  # executed if 'continue' was skipped (break)
 
+
+
     print 'Nada que ver...La bateria no esta baja.'
+
+
+schedule.every(.5).minutes.do(job)
+
+# schedule.every().hour.do(job)
+# schedule.every().day.at("10:30").do(job)
+# schedule.every().monday.do(job)
+# schedule.every().wednesday.at("13:15").do(job)
+
+
+while True:
+    schedule.run_pending()
+    time.sleep(1)

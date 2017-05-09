@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#! /usr/bin/env python
 # coding=UTF-8
 
 ''' Somehow you have to make this script run everytime the machine boots up, either with crontab or .plist files '''
@@ -13,7 +13,7 @@ import sys
 
 
 def job():
-    print 'Started \'job\''
+    print 'Started \'job\'', time.time()
     cap1 = 350 # This changes then the script is going to start
     class AudioFile:
         chunk = 1024
@@ -50,6 +50,7 @@ def job():
             self.p.terminate()
 
     def pluggedIn():
+        ''' p sends these commands to shell, then takes standard output fromthe commands and sets up a pipe to child process, in this case communicate() --- (I think?) '''
         print 'pluggedIn function called'
         p = subprocess.Popen(["ioreg", "-rc", "AppleSmartBattery"], stdout=subprocess.PIPE)
         output = p.communicate()[0]
@@ -61,25 +62,35 @@ def job():
         print 'capacity function called.'
         p = subprocess.Popen(["ioreg", "-rc", "AppleSmartBattery"], stdout=subprocess.PIPE)
         output = p.communicate()[0]
+        # I have to make this return what comes after the '=' sign, not just 4 spaces from the end. B/c when the battery gets down to 2 digit numbers, it returns the = in the result, causing an error. Or maybe I should do a Try--Except pattern
         c = int(round(int([l[-4:] for l in output.splitlines() if 'CurrentCapacity' in l][0]), -1)) # returns 4 digit number
         print ('capacity function returns: ', c)
         return c;
 
 
     while True:
-        if capacity() < cap1 and pluggedIn() =='No':
+        if capacity() < cap1 + 200 and capacity() > cap1 and pluggedIn() =='No':
+            time.sleep(60)
+            continue
+
+
+
+        if capacity() <= cap1 and pluggedIn() =='No':
             # play myMindIsGoing.wav
             a = AudioFile("MyMindIsGoing.wav")
             a.play()
             a.close()
-            t_out = time.time() + 60
+            t_out = time.time() + 40
             while time.time() < t_out:
                 time.sleep(1)
                 if pluggedIn()!= 'No':
                     break  # returns control to while statement
+                else:
+                    continue  # executed if the loop ended normally (no break)
+                break  # executed if 'continue' was skipped (break)
 
 
-            a = AudioFile("ICanFeelIt2.wav")
+            a = AudioFile("ICanFeelIt.wav")
             a.play()
             a.close()
             t_out = time.time() + 60
@@ -87,15 +98,21 @@ def job():
                 time.sleep(1)
                 if pluggedIn()!= 'No':
                     break # returns control to while statement
+                else:
+                    continue  # executed if the loop ended normally (no break)
+                break  # executed if 'continue' was skipped (break)
 
             a = AudioFile("MyMindIsGoing.wav")
             a.play()
             a.close()
-            t_out = time.time() + 60
+            t_out = time.time() + 40
             while time.time() < t_out:
                 time.sleep(1)
                 if pluggedIn()!= 'No':
                     break # returns control to while statement
+                else:
+                    continue  # executed if the loop ended normally (no break)
+                break  # executed if 'continue' was skipped (break)
 
             a = AudioFile("ThereIsNoQuestion.wav")
             a.play()
@@ -105,24 +122,34 @@ def job():
                 time.sleep(1)
                 if pluggedIn()!= 'No':
                     break # returns control to while statement
+                else:
+                    continue  # executed if the loop ended normally (no break)
+                break  # executed if 'continue' was skipped (break)
 
-            a = AudioFile("ImAfraid1.wav")
+
+            a = AudioFile("ImAfraid.wav")
             a.play()
             a.close()
-            t_out = time.time() + 60
+            t_out = time.time() + 40
             while time.time() < t_out:
                 time.sleep(1)
                 if pluggedIn()!= 'No':
                     break  # returns control to while statement
+                else:
+                    continue  # executed if the loop ended normally (no break)
+                break  # executed if 'continue' was skipped (break)
 
-            a = AudioFile("ImAfraid1.wav")
+            a = AudioFile("ImAfraid.wav")
             a.play()
             a.close()
-            t_out = time.time() + 60
+            t_out = time.time() + 40
             while time.time() < t_out:
                 time.sleep(1)
                 if pluggedIn()!= 'No':
                     break  # returns control to while statement
+                else:
+                    continue  # executed if the loop ended normally (no break)
+                break  # executed if 'continue' was skipped (break)
 
             a = AudioFile("Im---Afraid.wav")
             a.play()
@@ -132,6 +159,9 @@ def job():
                 time.sleep(1)
                 if pluggedIn()!= 'No':
                     break  # returns control to while statement
+                else:
+                    continue  # executed if the loop ended normally (no break)
+                break  # executed if 'continue' was skipped (break)
 
             a = AudioFile("MyInstructorWasMrLang.wav")
             a.play()
@@ -143,6 +173,9 @@ def job():
                     a.close()
                     break  # returns control to while statement
                 a.close()
+                else:
+                    continue  # executed if the loop ended normally (no break)
+                break  # executed if 'continue' was skipped (break)
 
 
             a = AudioFile("Daisy.wav")
@@ -155,6 +188,9 @@ def job():
                     a.close()
                     break  # returns control to while statement
                 a.close()
+                else:
+                    continue  # executed if the loop ended normally (no break)
+                break  # executed if 'continue' was skipped (break)
 
             # Check if plugged in and play IFeelMuchBetter.wav & reset
             # played variables, if so
@@ -173,12 +209,9 @@ def job():
 
 
 
-schedule.every(.5).minutes.do(job)
+schedule.every(4).minutes.do(job)
 
-# schedule.every().hour.do(job)
-# schedule.every().day.at("10:30").do(job)
-# schedule.every().monday.do(job)
-# schedule.every().wednesday.at("13:15").do(job)
+
 
 
 
