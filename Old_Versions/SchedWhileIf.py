@@ -10,6 +10,7 @@ import schedule, time, math, subprocess
 import pyaudio
 import wave
 import sys
+import re
 
 
 def job():
@@ -63,7 +64,7 @@ def job():
         p = subprocess.Popen(["ioreg", "-rc", "AppleSmartBattery"], stdout=subprocess.PIPE)
         output = p.communicate()[0]
         # I have to make this return what comes after the '=' sign, not just 4 spaces from the end. B/c when the battery gets down to 2 digit numbers, it returns the = in the result, causing an error. Or maybe I should do a Try--Except pattern
-        c = int(round(int([l[-4:] for l in output.splitlines() if 'CurrentCapacity' in l][0]), -1)) # returns 4 digit number
+        c = int([re.findall('\d+', l) for l in output.splitlines() if 'CurrentCapacity' in l][0][0]) # returns any numbers in line 
         print ('capacity function returns: ', c)
         return c;
 
@@ -171,8 +172,7 @@ def job():
                 time.sleep(1)
                 if pluggedIn() != 'No':
                     a.close()
-                    break  # returns control to while statement
-                a.close()
+                    break  #returns control to while stmnt
                 else:
                     continue  # executed if the loop ended normally (no break)
                 break  # executed if 'continue' was skipped (break)
@@ -187,7 +187,6 @@ def job():
                 if pluggedIn() != 'No':
                     a.close()
                     break  # returns control to while statement
-                a.close()
                 else:
                     continue  # executed if the loop ended normally (no break)
                 break  # executed if 'continue' was skipped (break)
@@ -209,7 +208,7 @@ def job():
 
 
 
-schedule.every(4).minutes.do(job)
+schedule.every(.5).minutes.do(job)
 
 
 
