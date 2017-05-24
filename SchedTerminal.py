@@ -1,6 +1,9 @@
 #!/usr/bin/env python
 # coding=UTF-8
 
+# One way to do this is to run this in command line and not bother with running a .sh start up script. $ nohup python SchedTerminal.py
+
+# To find the process id do $ ps -ef | grep SchedTerminal.py, then to kill it, do $ kill -9 <PID>
 
 ''' Schedule docs: https://schedule.readthedocs.io/en/stable/api.html'''
 
@@ -12,13 +15,13 @@ import pyaudio, wave, sys, re
 
 def play(self):
     #Turn system volume to max
-    subprocess.call(['osascript', '-e', 'set volume 10'])
+    subprocess.call(['osascript', '-e', 'set volume 100'])
     #
-    # # Pause Itunes audio
-    # subprocess.call(['osascript', '-e', 'tell application "iTunes"', '-e', 'pause', 'end tell'])
-    #
-    # # Pause Spotify
-    # subprocess.call(['osascript', '-e', 'tell application "spotify" to playpause'])
+    # Pause Itunes audio
+    subprocess.call(['osascript', '-e', 'tell application "iTunes"', '-e', 'pause', 'end tell'])
+
+    # Pause Spotify
+    subprocess.call(['osascript', '-e', 'tell application "spotify" to playpause'])
 
 
     # Play entire file
@@ -31,7 +34,7 @@ def play(self):
     # Unpause Itunes
     # subprocess.call(['osascript', '-e', 'tell application "iTunes" to play', 'end tell'])
     # Turn system volume to 5
-    subprocess.call(['osascript', '-e', 'set volume 4'])
+    subprocess.call(['osascript', '-e', 'set volume 0'])
 
 
 def pluggedIn():
@@ -53,11 +56,11 @@ def capacity():
 
 def playIFeelMuchBetter():
     #Turn system volume to max
-    subprocess.call(['osascript', '-e', 'set volume 6'])
+    subprocess.call(['osascript', '-e', 'set volume 4'])
     #  Play I feel much better now
     subprocess.call(["afplay", IFeelMuchBetterPath])
-    # Turn system volum back down
-    subprocess.call(['osascript', '-e', 'set volume 4'])
+    subprocess.call(['osascript', '-e', 'tell application "spotify" to play'])
+    time.sleep(1)
 
 
 myMindIsGoingPath = os.path.abspath("/Users/evanhendrix1/Google Drive/programming/python/Sched_Proj/myMindIsGoing.wav")
@@ -132,6 +135,14 @@ def startFunct():
                     playIFeelMuchBetter()
                     startFunct()
 
+
+            play(imAfraidPath)
+            t_out = time.time() + 30
+            while time.time() < t_out:
+                time.sleep(1)
+                if pluggedIn() != 'No':
+                    playIFeelMuchBetter()
+                    startFunct()
 
             play(imAfraidPath)
             t_out = time.time() + 30

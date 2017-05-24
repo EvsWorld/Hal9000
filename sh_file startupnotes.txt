@@ -1,7 +1,0 @@
-username=$(evanhendrix1);
-sudo chmod 600 ~/Library/LaunchAgents/com.evanhendrix1.SchedTerminal.plist;
-
-sudo chown root:wheel ~/Library/LaunchAgents/com.evanhendrix1.schedTerminal.plist;
-
-chmod +x /Users/evanhendrix1/Google Drive/programming/python/Sched_Proj/SchedTerminal.py;
-sudo launchctl load ~/Library/LaunchAgents/com.evanhendrix1.SchedTerminal.plist
